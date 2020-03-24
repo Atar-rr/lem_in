@@ -1,0 +1,4 @@
+C:\cygwin64\bin\cmake.exe -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /cygdrive/c/Users/Вика/Documents/GitHub/lem_in
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /cygdrive/c/Users/Р’РёРєР°/Documents/GitHub/lem_in/cmake-build-debug
