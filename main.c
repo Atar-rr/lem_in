@@ -8,6 +8,7 @@ void	add_room(t_lemin *lemin, t_room *room)
 {
 	t_room	*help;
 
+	ft_printf(1, "%s, status - %d, x - %d, y - %d\n", room->name, room->rooms_status, room->x, room->y);
 	if (lemin->rooms == NULL)
 		lemin->rooms = room;
 	else
@@ -23,7 +24,7 @@ void	create_room(t_lemin *lemin, char *line, int flag)
 	t_room	*room;
 	int 	i;
 
-	i = ft_count_word(line, ' ');
+	i = ft_len_word(line, ' ');
 	room = (t_room *)malloc(sizeof(t_room));
 	room->name = ft_strsub(line, 0, i);
 	i++;
@@ -59,7 +60,10 @@ void 	create_graph(t_lemin *lemin, char *file) //сделать потом ин�
 		else if (ft_strcmp(line, "##end") == 0)
 			flag = END;
 		else if (ft_count_word(line, ' ') == 3)
+		{
 			create_room(lemin, line, flag);
+			flag = USUAL;
+		}
 		else
 			ft_printf(1, "123\n");
 		//else if (ft_count_word(line, ' ') == 1)
