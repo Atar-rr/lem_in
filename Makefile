@@ -11,10 +11,9 @@ FLAGS = -Wall -Wextra -Werror
 LIB = ./libftprint/libftprintf.a
 
 all: $(NAME)
-	$(NAME): $(OBJ)
-		gcc $(FLAGS) $(INC) $(OBJ) $(LIB) -o $(NAME)
+	gcc $(FLAGS) $(INC) $(OBJ) $(LIB) -o $(NAME)
 clean:
-	rm (OBJ)
+	rm $(OBJ)
 
 fclean: clean
 	rm -rf $(NAME)
