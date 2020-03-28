@@ -4,11 +4,24 @@
 
 #include "lem_in.h"
 
+void	print_rooms(t_lemin *lemin)
+{
+	t_room	*help;
+
+	ft_printf(1, "Ant's count %d\n", lemin->ants_count);
+	ft_printf(1, "Room's count %d\n"), lemin->rooms_count);
+	help = lemin->rooms;
+	while (help)
+	{
+		ft_printf(1, "%s, status - %d, x - %d, y - %d\n", room->name, room->rooms_status, room->x, room->y);
+		help = help->next;
+	}
+}
+
 void	add_room(t_lemin *lemin, t_room *room)
 {
 	t_room	*help;
 
-	ft_printf(1, "%s, status - %d, x - %d, y - %d\n", room->name, room->rooms_status, room->x, room->y);
 	if (lemin->rooms == NULL)
 		lemin->rooms = room;
 	else
@@ -65,12 +78,13 @@ void 	create_graph(t_lemin *lemin, char *file) //сделать потом ин�
 			flag = USUAL;
 		}
 		else
-			ft_printf(1, "123\n");
+			ft_printf(1, "link\n");
 		//else if (ft_count_word(line, ' ') == 1)
 			//create_;
 		free(line);
 	}
 	close (fd);
+	print_rooms(lemin);
 }
 
 t_lemin		*initialization()
