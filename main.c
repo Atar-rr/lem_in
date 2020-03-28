@@ -4,16 +4,101 @@
 
 #include "lem_in.h"
 
+void	print_array(int *array, int size)
+{
+	int i = 0;
+
+	while (i < size)
+	{
+		ft_printf(1, "%-5d", array[i]);
+		i++;
+	}
+}
+
+void	print_element(t_room *rooms, int index)
+{
+	t_room *help = rooms;
+
+	while(help->index != index)
+		help = help->next;
+	ft_printf(1, "%-5s", help->name);
+}
+
+void	print_matrix(t_lemin *lemin)
+{
+	int i = 0;
+	t_room		*help;
+
+	ft_printf(1, "     ");
+	while (i < lemin->rooms_count)
+	{
+		print_element(lemin->rooms, i);
+		i++;
+
+	}
+	ft_printf(1, "\n\n");
+	i = 0;
+	while (i < lemin->rooms_count)
+	{
+		print_element(lemin->rooms, i);
+		print_array(lemin->matrix[i], lemin->rooms_count);
+		i++;
+		ft_printf(1, "\n");
+	}
+
+}
+
+void	print_double_array(int **array, int size)
+{
+	int i;
+	int k;
+
+	i = 0;
+	while (i < size)
+	{
+		k = 0;
+		while (k < size)
+		{
+			ft_printf(1, "%d  ", array[i][k]);
+			k++;
+		}
+		ft_printf(1, "\n");
+		i++;
+	}
+}
+
+int	**create_double_array(int size)
+{
+	int	i;
+	int	k;
+	int	**array;
+
+	i = 0;
+	array = (int **)malloc(sizeof(int *) * size);
+	while (i < size)
+	{
+		k = 0;
+		array[i] = (int *)malloc(sizeof(int) * size);
+		while (k < size)
+		{
+			array[i][k] = 0;
+			k++;
+		}
+		i++;		
+	}
+	return (array);
+}
+
 void	print_rooms(t_lemin *lemin)
 {
 	t_room	*help;
 
 	ft_printf(1, "Ant's count %d\n", lemin->ants_count);
-	ft_printf(1, "Room's count %d\n"), lemin->rooms_count);
+	ft_printf(1, "Room's count %d\n", lemin->rooms_count);
 	help = lemin->rooms;
 	while (help)
 	{
-		ft_printf(1, "%s, status - %d, x - %d, y - %d\n", room->name, room->rooms_status, room->x, room->y);
+		ft_printf(1, "name - %s, status - %d, index - %d, x - %d, y - %d\n", help->name, help->rooms_status, help->index, help->x, help->y);
 		help = help->next;
 	}
 }
@@ -27,8 +112,12 @@ void	add_room(t_lemin *lemin, t_room *room)
 	else
 	{
 		help = lemin->rooms;
-		lemin->rooms = room;
-		room->next = help;
+		while (help->next)
+			help = help->next;
+		help->next = room;
+
+		//lemin->rooms = room;
+		//room->next = help;
 	}
 }
 
@@ -54,6 +143,60 @@ void	create_room(t_lemin *lemin, char *line, int flag)
 	add_room(lemin, room);
 }
 
+void	assign_indexes(t_lemin *lemin)
+{
+	t_room	*help;
+	int	i;
+
+	i = 1;
+	help = lemin->rooms;
+	while(help)
+	{
+		if (help->rooms_status == START)
+			help->index = 0;
+		else if (help->rooms_status == END)
+			help->index = lemin->rooms_count - 1;
+		else
+		{
+			help->index = i;
+			i++;
+		}
+		help = help->next;
+	}
+}
+
+t_room	*find_room(t_room *rooms, char *name)
+{
+	t_room	*help;
+
+	help = rooms;
+	while (ft_strcmp(help->name, name) != 0)
+		help = help->next;
+	return (help);
+
+}
+
+void	create_links(t_lemin *lemin, char *line)
+{
+	char	**names;
+	t_room	*from_room;
+	t_room	*to_room;
+
+	if (lemin->matrix == NULL)
+	{
+		lemin->matrix = create_double_array(lemin->rooms_count);
+		assign_indexes(lemin);
+		//print_rooms(lemin);
+		//print_matrix(lemin);
+		//print_double_array(lemin->matrix, lemin->rooms_count);
+	}
+	names = ft_strsplit(line, '-');
+	from_room = find_room(lemin->rooms, names[0]);
+	to_room = find_room(lemin->rooms, names[1]);
+	lemin->matrix[from_room->index][to_room->index] = 1;
+	lemin->matrix[to_room->index][from_room->index] = 1;
+}
+
 void 	create_graph(t_lemin *lemin, char *file) //сделать потом интовой, чтобы возвращала 0 в случае ошибки
 {
 	int 	fd;
@@ -77,14 +220,13 @@ void 	create_graph(t_lemin *lemin, char *file) //сделать потом ин�
 			create_room(lemin, line, flag);
 			flag = USUAL;
 		}
-		else
-			ft_printf(1, "link\n");
-		//else if (ft_count_word(line, ' ') == 1)
-			//create_;
+		else if (ft_count_word(line, ' ') == 1)
+			create_links(lemin, line);
 		free(line);
 	}
 	close (fd);
 	print_rooms(lemin);
+	print_matrix(lemin);
 }
 
 t_lemin		*initialization()
@@ -96,6 +238,7 @@ t_lemin		*initialization()
 	lemin->ants_count = 0;
 	lemin->rooms_count = 0;
 	lemin->rooms = NULL;
+	lemin->matrix = NULL;
 	return (lemin);
 }
 

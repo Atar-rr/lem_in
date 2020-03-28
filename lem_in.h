@@ -18,14 +18,16 @@ typedef struct	s_room
 	int				rooms_status; 	//START, END, USUAL
 	int				x; 				// координата для визуализации
 	int				y; 				// координата для визуализации
+	int				index;
 	struct s_room	*links; 		// cписок связей с другими комнатами
 	struct s_room	*next;			//используется при считывание
 }				t_room;
 
 typedef struct	s_lemin 			// общая структура
 {
-	int			ants_count; 		//количество муравьев
+	int		ants_count; 		//количество муравьев
 	int 		rooms_count;
+	int		**matrix;
 	t_room		*rooms; 			//указатель на старт
 
 }				t_lemin;
